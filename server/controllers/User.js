@@ -31,7 +31,7 @@ exports.register = async (req, res) => {
 
         const existingUser = await Users.findOne({ email: registerEmail });
         if (existingUser) {
-            res.status(400).json({
+            return res.status(400).json({
                 msg: "An account with this email already exists"
             });
         }
@@ -128,7 +128,7 @@ exports.activateAccount = async (req, res) => {
                 const { registerUsername, registerEmail, registerPassword } = decodedToken;
                 const existingUser = await Users.findOne({ email: registerEmail });
                 if (existingUser) {
-                    res.status(400).json({
+                    return res.status(400).json({
                         msg: "An account with this email already exists"
                     });
                 }
@@ -140,7 +140,7 @@ exports.activateAccount = async (req, res) => {
                     password: passwordHash
                 });
                 const savedUser = await newUser.save();
-                res.status(200).json(savedUser);
+                return res.status(200).json(savedUser);
             })
         } else {
             return res.json({ error: "Error in verifying account. Please try again" })

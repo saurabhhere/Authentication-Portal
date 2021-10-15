@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import './Login.css';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import url from '../../misc/url';
 
 const Login = () => {
@@ -36,7 +37,15 @@ const Login = () => {
     }
 
 	const notifyUser = () => {
-		console.log("Check your mail")
+        toast.info('Please check your mail', {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+        });
+		
 	}
 
     useEffect(() => {
