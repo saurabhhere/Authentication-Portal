@@ -1,7 +1,43 @@
 import React, {useEffect, useState} from 'react';
 import './Login.css';
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
+import url from '../../misc/url';
 
 const Login = () => {
+
+    const [loginEmail, setloginEmail] = useState('');
+    const [loginPassword, setloginPassword] = useState('');
+    const [registerUsername, setregisterUsername] = useState('')
+    const [registerEmail, setregisterEmail] = useState('')
+    const [registerPassword, setregisterPassword] = useState('')
+    const [registerCheckPassword, setregisterCheckPassword] = useState('')
+    const [error, setError] = useState('');
+
+    const history = useHistory();
+
+	const submitRegister = async (e) => {
+        e.preventDefault();
+        try {
+            const newUser = { registerUsername, registerEmail, registerPassword, registerCheckPassword};
+			console.log(newUser);
+            await axios.post(`${url.serverURL}/user/register`, newUser).then(res => {
+                console.log(res);
+                notifyUser();
+            });
+        } catch (error) {
+            console.log(error.response);
+            if (error.response){
+                setError(error.response.data.msg)
+            } else {
+                console.log(error);
+            }
+        }
+    }
+
+	const notifyUser = () => {
+		console.log("Check your mail")
+	}
 
     useEffect(() => {
         const signUpButton = document.getElementById('signUp');
@@ -27,13 +63,14 @@ const Login = () => {
 						<a href="#" className="social"><i className="fab fa-google-plus-g"></i></a>
 					</div>
 					<span className="login_info">or use your email for registration</span>
-					<input className="login_input" type="text" placeholder="Name" />
-					<input className="login_input" type="email" placeholder="Email" />
-					<input className="login_input" type="password" placeholder="Password" />
-					<input className="login_input" type="password" placeholder="Check Password" />
-					<input className="login_input" type="password" placeholder="Check Password" />
-
-					<button className="login_button">Sign Up</button>
+					<input className="login_input" type="text" placeholder="Name" onChange={e => setregisterUsername(e.target.value)} value={registerUsername} required/>
+					<input className="login_input" type="email" placeholder="Email" onChange={e => setregisterEmail(e.target.value)} value={registerEmail} required/>
+					<input className="login_input" type="password" placeholder="Password" onChange={e => setregisterPassword(e.target.value)} value={registerPassword} required/>
+					<input className="login_input" type="password" placeholder="Confirm Password" onChange={e => setregisterCheckPassword(e.target.value)} value={registerCheckPassword} required/>
+					<div className="form_error">
+                            {error}
+                	</div>
+					<button className="login_button" onClick={submitRegister}>Sign Up</button>
 				</form>
 			</div>
 			<div className="form-container sign-in-container">

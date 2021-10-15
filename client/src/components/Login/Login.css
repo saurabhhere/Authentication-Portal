@@ -29,6 +29,11 @@
 	font-size: 12px;
 }
 
+.form_error {
+	color: red;
+	font-size: 14px;
+}
+
 .form-container a {
 	color: #333;
 	font-size: 14px;
