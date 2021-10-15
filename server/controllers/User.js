@@ -51,12 +51,16 @@ exports.register = async (req, res) => {
         });
 
         const mail = `
-        <h2>Please click on given link to activate your account</h2>
+        <p> Hello ${registerUsername}, </p>
+        <p>Welcome to Spark demo Portal</p>
+        <h3>Please click on given button to activate your account</h3>
+        <a href=${process.env.CLIENT_URL}/authentication/activate/${token} style="margin:20px; padding: 20px; background: blue; color: white; text-decoration: none">Activate Account</a>
+        <p>or paste this link in your browser</p>
         <p>${process.env.CLIENT_URL}/authentication/activate/${token}</p>    
         `
 
         let mailOptions = {
-            from: '"Spark Portal" <spark@donotreply.com>',
+            from: '"Spark Portal" <saurabhguptajpr@yahoo.in>',
             to: registerEmail,
             subject: "Account Activation",
             html: mail
