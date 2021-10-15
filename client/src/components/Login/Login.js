@@ -17,6 +17,24 @@ const Login = () => {
 
     const history = useHistory();
 
+	const submitLogin = async (e) => {
+        e.preventDefault();
+        try {
+            const loginUser = { loginEmail, loginPassword };
+            const loginResponse = await axios.post(`${url.serverURL}/user/login`, loginUser);
+			console.log(loginResponse.data.token, loginResponse.data.user);
+			localStorage.setItem("auth-token", loginResponse.data.token);
+			// history.push("/");
+        } catch (error) {
+            console.log(error);
+            if (error.response){
+                setError(error.response.data.msg)
+            } else {
+                console.log(error);
+            }
+        }
+    }
+
 	const submitRegister = async (e) => {
         e.preventDefault();
         try {
@@ -89,10 +107,13 @@ const Login = () => {
 						<a href="#" className="social"><i className="fab fa-google-plus-g"></i></a>
 					</div>
 					<span className="login_info">or use your account</span>
-					<input className="login_input" type="email" placeholder="Email" />
-					<input className="login_input" type="password" placeholder="Password" />
+					<input className="login_input" type="email" placeholder="Email" onChange={e => setloginEmail(e.target.value)} value={loginEmail} required />
+					<input className="login_input" type="password" placeholder="Password" onChange={e => setloginPassword(e.target.value)} value={loginPassword} required />
 						<a href="#">Forgot your password?</a>
-					<button className="login_button">Sign In</button>
+						<div className="form_error">
+                            {error}
+                </div>
+					<button className="login_button" onClick={submitLogin}>Sign In</button>
 				</form>
 			</div>
 			<div className="overlay-container">
