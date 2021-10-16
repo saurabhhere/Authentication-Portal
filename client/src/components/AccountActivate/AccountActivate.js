@@ -1,40 +1,16 @@
-import axios from 'axios';
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom';
-import url from '../../misc/url';
-import { toast } from 'react-toastify';
+import {connect} from 'react-redux';
+import {activateUser} from '../../actions/authActions';
 import './AccountActivate.css';
 
-const AccountActivate = () => {
+const AccountActivate = (props) => {
 
     const { token } = useParams();
     const [status, setStatus] = useState(false);
 
-    const history = useHistory();
-
     const activateReq = async (e) => {
-        await axios.post(`${url.serverURL}/user/email-activate`, {token})
-        .then((res) => {
-            console.log(res);
-            accountActivateToast();
-            setStatus(true);
-            setTimeout(() => {
-                history.push('/user/login');
-            }, 2000);
-        }).catch((error) => {
-            console.log(error);
-        })
-    }
-    
-    const accountActivateToast = () => {
-        toast.success('Account activated successfully!', {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-        });
+        props.activateUser({token}, props.history, setStatus);
     }
 
     return (
@@ -58,4 +34,4 @@ const AccountActivate = () => {
     )
 }
 
-export default AccountActivate
+export default connect(null, {activateUser})(AccountActivate)

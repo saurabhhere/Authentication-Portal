@@ -16,7 +16,7 @@ app.use(cors({
     methods: "GET, POST, PUT, DELETE"
 }));
 
-app.use('/user', usersRoute);
+app.use('/api/users', usersRoute);
 
 app.use('/', (req, res) => {
     res.send('Spark Server is running')

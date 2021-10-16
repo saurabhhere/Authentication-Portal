@@ -101,13 +101,17 @@ exports.login = async (req, res) => {
                 msg: "Invalid credentials"
             });
         }
+        const payload = {
+            id: user._id,
+            name: user.username,
+            email: user.email
+          };
+          console.log(payload);
         // we can add expiresIn parameter in sec
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 31556926});
         res.json({
-            token, user: {
-                id: user._id,
-                username: user.username
-            },
+            success: true,
+            token
         });
     } catch (error) {
         res.status(500).json({

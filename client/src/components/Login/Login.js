@@ -1,11 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import './Login.css';
-import axios from 'axios';
 import {connect} from 'react-redux';
-import { updateUser, updateToken } from '../../actions/user';
+import { loginUser, registerUser } from '../../actions/authActions';
 import { useHistory } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import url from '../../misc/url';
 
 const Login = (props) => {
 
@@ -19,18 +16,21 @@ const Login = (props) => {
 
     const history = useHistory();
 
+    useEffect(() => {
+        if (props.auth.isAuthenticated) {
+            props.history.push("/user/profile");
+          }
+        if (props.errors){
+            console.log("UseEffect error: ", props.errors.msg);
+            setError(props.errors.msg)
+        }
+    }, [props])
+
 	const submitLogin = async (e) => {
         e.preventDefault();
         try {
-            const loginUser = { loginEmail, loginPassword };
-            const loginResponse = await axios.post(`${url.serverURL}/user/login`, loginUser);
-			console.log(loginResponse.data.token, loginResponse.data.user);
-			props.updateUser(loginResponse.data.user);
-			props.updateToken(loginResponse.data.token);
-            if (loginResponse.data.token){
-                localStorage.setItem("auth-token", loginResponse.data.token);
-                history.push("/user/profile");
-            }
+            const userData = { loginEmail, loginPassword };
+            props.loginUser(userData);
         } catch (error) {
             console.log(error);
             if (error.response){
@@ -46,10 +46,11 @@ const Login = (props) => {
         try {
             const newUser = { registerUsername, registerEmail, registerPassword, registerCheckPassword};
 			console.log(newUser);
-            await axios.post(`${url.serverURL}/user/register`, newUser).then(res => {
-                console.log(res);
-                notifyUser();
-            });
+            props.registerUser(newUser, props.history);
+            setregisterUsername('');
+            setregisterEmail('');
+            setregisterPassword('');
+            setregisterCheckPassword(''); 
         } catch (error) {
             console.log(error.response);
             if (error.response){
@@ -59,18 +60,6 @@ const Login = (props) => {
             }
         }
     }
-
-	const notifyUser = () => {
-        toast.info('Please check your mail', {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-        });
-		
-	}
 
     useEffect(() => {
         const signUpButton = document.getElementById('signUp');
@@ -142,8 +131,8 @@ const Login = (props) => {
 }
 
 const mapStateToProps = state => ({
-	user: state.user.user,
-	token: state.user.token
-}) 
+    auth: state.auth,
+    errors: state.errors
+  });
 
-export default connect(mapStateToProps, {updateUser, updateToken})(Login);
+export default connect(mapStateToProps, {registerUser, loginUser})(Login);
