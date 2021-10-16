@@ -180,8 +180,9 @@ exports.checkToken = async (req, res) => {
 exports.getUser = async(req, res) => {
     const user = await Users.findById(req.user);
     res.json({
+        id: user._id,
         username: user.username,
-        id: user._id
+        email: user.email
     })
 }
 
@@ -189,11 +190,12 @@ exports.getProfile = async(req, res) => {
     const {id} = req.params;
     console.log(id);
     try {
-        Users.findById(id).populate('chatrooms').exec((err, chatrooms) => {
-            if (err) return res.status(400).send(err.message);
-            console.log(chatrooms);
-            res.status(200).json(chatrooms);
-        });
+        const user = await Users.findById(id);
+        res.json({
+            id: user._id,
+            username: user.username,
+            email: user.email
+        })
     } catch (error) {
         res.status(400).json({
             message: error.message

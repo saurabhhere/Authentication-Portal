@@ -29,7 +29,7 @@ const Login = (props) => {
 			props.updateToken(loginResponse.data.token);
             if (loginResponse.data.token){
                 localStorage.setItem("auth-token", loginResponse.data.token);
-                history.push("/");
+                history.push("/user/profile");
             }
         } catch (error) {
             console.log(error);

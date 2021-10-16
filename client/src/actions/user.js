@@ -1,3 +1,5 @@
+import axios from 'axios'
+import url from '../misc/url'
 import {
     UPDATE_USER,
     UPDATE_TOKEN,
@@ -5,9 +7,10 @@ import {
 
 export const updateUser = (user) => async dispatch => {
     try {
+        const res = await axios.get(`${url.serverURL}/user/profile/${user.id}`)
         dispatch ({
             type: UPDATE_USER,
-            payload: user
+            payload: res.data
         })
     } catch (error) {
         console.log(error);
