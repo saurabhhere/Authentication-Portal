@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import './Login.css';
 import axios from 'axios';
+import {connect} from 'react-redux';
+import { updateUser, updateToken } from '../../actions/user';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import url from '../../misc/url';
 
-const Login = () => {
+const Login = (props) => {
 
     const [loginEmail, setloginEmail] = useState('');
     const [loginPassword, setloginPassword] = useState('');
@@ -23,8 +25,12 @@ const Login = () => {
             const loginUser = { loginEmail, loginPassword };
             const loginResponse = await axios.post(`${url.serverURL}/user/login`, loginUser);
 			console.log(loginResponse.data.token, loginResponse.data.user);
-			localStorage.setItem("auth-token", loginResponse.data.token);
-			// history.push("/");
+			props.updateUser(loginResponse.data.user);
+			props.updateToken(loginResponse.data.token);
+            if (loginResponse.data.token){
+                localStorage.setItem("auth-token", loginResponse.data.token);
+                history.push("/");
+            }
         } catch (error) {
             console.log(error);
             if (error.response){
@@ -135,4 +141,9 @@ const Login = () => {
     )
 }
 
-export default Login;
+const mapStateToProps = state => ({
+	user: state.user.user,
+	token: state.user.token
+}) 
+
+export default connect(mapStateToProps, {updateUser, updateToken})(Login);
