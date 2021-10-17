@@ -15,6 +15,7 @@ app.use(cors({
     origin: 'http://localhost:3000',
     methods: "GET, POST, PUT, DELETE"
 }));
+app.use('/uploads', express.static('uploads'));
 
 app.use('/api/users', usersRoute);
 

@@ -7,7 +7,6 @@ const initialState = {
     isAuthenticated: false,
     user: {},
     loading: false,
-    token: null
 }
 
 const userReducer = (state = initialState, action) => {

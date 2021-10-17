@@ -10,7 +10,8 @@ import {
 import { toast } from 'react-toastify';
 
 // Register User
-export const registerUser = (userData) => dispatch => {
+export const registerUser = (userData, history, callback) => dispatch => {
+  // console.log(userData);
   axios
     .post(`${url.serverURL}/api/users/register`, userData)
     .then(res => {
@@ -26,6 +27,7 @@ export const registerUser = (userData) => dispatch => {
         type: GET_ERRORS,
         payload: {}
       })
+      callback();
     })
     .catch(err =>{
       console.log("error", err)

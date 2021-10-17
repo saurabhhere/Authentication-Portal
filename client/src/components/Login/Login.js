@@ -12,6 +12,7 @@ const Login = (props) => {
     const [registerEmail, setregisterEmail] = useState('')
     const [registerPassword, setregisterPassword] = useState('')
     const [registerCheckPassword, setregisterCheckPassword] = useState('')
+    const [registerImage, setRegisterImage] = useState('');
     const [error, setError] = useState('');
 
     const history = useHistory();
@@ -21,7 +22,6 @@ const Login = (props) => {
             props.history.push("/user/profile");
           }
         if (props.errors){
-            console.log("UseEffect error: ", props.errors.msg);
             setError(props.errors.msg)
         }
     }, [props])
@@ -44,13 +44,21 @@ const Login = (props) => {
 	const submitRegister = async (e) => {
         e.preventDefault();
         try {
-            const newUser = { registerUsername, registerEmail, registerPassword, registerCheckPassword};
-			console.log(newUser);
-            props.registerUser(newUser, props.history);
-            setregisterUsername('');
-            setregisterEmail('');
-            setregisterPassword('');
-            setregisterCheckPassword(''); 
+            const newUser = new FormData();
+            newUser.append('registerUsername', registerUsername);
+            newUser.append('registerEmail', registerEmail);
+            newUser.append('registerPassword', registerPassword);
+            newUser.append('registerCheckPassword', registerCheckPassword);
+            newUser.append('registerImage', registerImage);
+            props.registerUser(newUser, props.history, callback);
+
+            function callback(){
+                setregisterUsername('');
+                setregisterEmail('');
+                setregisterPassword('');
+                setregisterCheckPassword('');
+            }
+
         } catch (error) {
             console.log(error.response);
             if (error.response){
@@ -60,6 +68,11 @@ const Login = (props) => {
             }
         }
     }
+
+    const fileSelectHandler = (e) => {
+        e.preventDefault();
+        setRegisterImage(e.target.files[0]);
+    };
 
     useEffect(() => {
         const signUpButton = document.getElementById('signUp');
@@ -89,6 +102,7 @@ const Login = (props) => {
 					<input className="login_input" type="email" placeholder="Email" onChange={e => setregisterEmail(e.target.value)} value={registerEmail} required/>
 					<input className="login_input" type="password" placeholder="Password" onChange={e => setregisterPassword(e.target.value)} value={registerPassword} required/>
 					<input className="login_input" type="password" placeholder="Confirm Password" onChange={e => setregisterCheckPassword(e.target.value)} value={registerCheckPassword} required/>
+					<input className="login_input" type="file" name="registerImage" accept=".png, .jpg, .jpeg" onChange={fileSelectHandler}/>
 					<div className="form_error">
                             {error}
                 	</div>

@@ -16,6 +16,9 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 5
     },
+    image: {
+        type: String
+    }
 }, {timestamps: true})
 
 const Users = mongoose.model('users', userSchema);

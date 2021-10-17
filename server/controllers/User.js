@@ -35,8 +35,10 @@ exports.register = async (req, res) => {
                 msg: "An account with this email already exists"
             });
         }
+        console.log("registerImage", req.file);
+        let registerImage = req.file ? req.file.filename : "default.png";
 
-        const token = jwt.sign({ registerUsername, registerEmail, registerPassword }, process.env.JWT_SECRET, { expiresIn: '20m' });
+        const token = jwt.sign({ registerUsername, registerEmail, registerPassword, registerImage }, process.env.JWT_SECRET, { expiresIn: '20m' });
 
         let transporter = nodemailer.createTransport({
             service: "Yahoo",
@@ -104,7 +106,8 @@ exports.login = async (req, res) => {
         const payload = {
             id: user._id,
             name: user.username,
-            email: user.email
+            email: user.email,
+            image: user.image
           };
           console.log(payload);
         // we can add expiresIn parameter in sec
@@ -129,7 +132,7 @@ exports.activateAccount = async (req, res) => {
                 if (err){
                     return res.status(400).json({ error: "Incorrect or expired Link." })
                 }
-                const { registerUsername, registerEmail, registerPassword } = decodedToken;
+                const { registerUsername, registerEmail, registerPassword, registerImage } = decodedToken;
                 const existingUser = await Users.findOne({ email: registerEmail });
                 if (existingUser) {
                     return res.status(400).json({
@@ -141,7 +144,8 @@ exports.activateAccount = async (req, res) => {
                 const newUser = new Users({
                     username: registerUsername,
                     email: registerEmail,
-                    password: passwordHash
+                    password: passwordHash,
+                    image: registerImage
                 });
                 const savedUser = await newUser.save();
                 return res.status(200).json(savedUser);
