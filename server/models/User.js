@@ -18,6 +18,13 @@ const userSchema = new mongoose.Schema({
     },
     image: {
         type: String
+    },
+    resetToken: {
+        type: String,
+        default: ''
+    },
+    expireToken: {
+        type: Date
     }
 }, {timestamps: true})
 

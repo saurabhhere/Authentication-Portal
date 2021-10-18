@@ -11,7 +11,6 @@ import { toast } from 'react-toastify';
 
 // Register User
 export const registerUser = (userData, history, callback) => dispatch => {
-  // console.log(userData);
   axios
     .post(`${url.serverURL}/api/users/register`, userData)
     .then(res => {
@@ -54,14 +53,16 @@ export const loginUser = userData => dispatch => {
       // Set token to localStorage
       const { token } = res.data;
       localStorage.setItem("jwtToken", token);
-
       // Set token to Auth header
       setAuthToken(token);
-
       // Decode token to get user data
       const decoded = jwt_decode(token);
       // Set current user
       dispatch(setCurrentUser(decoded));
+      dispatch({
+        type: GET_ERRORS,
+        payload: {}
+      })
     })
     .catch(err =>
       dispatch({
@@ -111,3 +112,64 @@ export const logoutUser = (history) => dispatch => {
   history.push('/user/login');
   dispatch(setCurrentUser({}));
 };
+
+export const forgotpassword = resetEmail => dispatch => {
+  dispatch({
+    type: GET_ERRORS,
+    payload: {}
+  })
+  axios
+    .post(`${url.serverURL}/api/users/forgot-password`, resetEmail)
+    .then(res => {
+      toast.info(`Reset link sent on mail`, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      dispatch({
+        type: GET_ERRORS,
+        payload: {}
+      })
+    })
+    .catch(err =>{
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })}
+    );
+}
+
+export const resetpassword = (password, history) => dispatch => {
+  dispatch({
+    type: GET_ERRORS,
+    payload: {}
+  })
+  axios
+    .post(`${url.serverURL}/api/users/reset-password`, password)
+    .then(res => {
+      toast.success('Password Updated!', {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      setTimeout(() => {
+        history.push('/user/login');
+    }, 2000);
+      dispatch({
+        type: GET_ERRORS,
+        payload: {}
+      })
+    })    
+    .catch(err =>{
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })}
+    );
+}

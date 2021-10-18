@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import './Login.css';
 import {connect} from 'react-redux';
 import { loginUser, registerUser } from '../../actions/authActions';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 const Login = (props) => {
 
@@ -118,10 +118,10 @@ const Login = (props) => {
 					<span className="login_info">or use your account</span>
 					<input className="login_input" type="email" placeholder="Email" onChange={e => setloginEmail(e.target.value)} value={loginEmail} required />
 					<input className="login_input" type="password" placeholder="Password" onChange={e => setloginPassword(e.target.value)} value={loginPassword} required />
-						<a href="#">Forgot your password?</a>
+						<Link to='/forgot-password'>Forgot your password?</Link>
 						<div className="form_error">
                             {error}
-                </div>
+                        </div>
 					<button className="login_button" onClick={submitLogin}>Sign In</button>
 				</form>
 			</div>

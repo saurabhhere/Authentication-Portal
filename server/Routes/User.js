@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const auth = require('../middleware/auth');
-const {register, login, activateAccount, deleteUser, checkToken, getUser, getProfile, updateProfile, getAllUsers} = require('../controllers/User');
+const {register, login, activateAccount, deleteUser, checkToken, getUser, getProfile, getAllUsers, forgotPassword, resetPassword} = require('../controllers/User');
 
 const multer = require('multer');
 
@@ -34,7 +34,8 @@ router.delete("/delete", auth, deleteUser);
 router.post("/tokenIsValid", checkToken);
 router.get("/", auth, getUser);
 router.get("/profile/:id", getProfile);
-router.put("/profile/:id", updateProfile);
 router.get("/all", getAllUsers);
+router.post("/forgot-password", forgotPassword)
+router.post("/reset-password", resetPassword)
 
 module.exports = router;

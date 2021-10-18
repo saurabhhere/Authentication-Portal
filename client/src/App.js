@@ -6,6 +6,8 @@ import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import Profile from './components/Profile/Profile';
 import PrivateRoute from './components/PrivateRoute'
+import ForgotPassword from './components/ForgotPassword/ForgotPassword';
+import ResetPassword from './components/ResetPassword/ResetPassword';
 
 toast.configure();
 
@@ -16,6 +18,8 @@ function App() {
           <Switch>
             <Route path="/user/login" exact component={Login} />
             <Route path="/authentication/activate/:token" exact component={AccountActivate} />
+            <Route path="/forgot-password" exact component={ForgotPassword} />
+            <Route path="/user/resetpassword/:token" exact component={ResetPassword} />
             <PrivateRoute path="/user/profile" exact component={Profile} />
             <Redirect to="/" />
           </Switch> 

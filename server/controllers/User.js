@@ -2,6 +2,19 @@ const Users = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const crypto = require('crypto')
+
+let transporter = nodemailer.createTransport({
+    service: "Yahoo",
+    secure: false,
+    auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+    },
+    tls: {
+        rejectUnauthorized: false
+    }
+});
 
 exports.register = async (req, res) => {
     try {
@@ -39,18 +52,6 @@ exports.register = async (req, res) => {
         let registerImage = req.file ? req.file.filename : "default.png";
 
         const token = jwt.sign({ registerUsername, registerEmail, registerPassword, registerImage }, process.env.JWT_SECRET, { expiresIn: '20m' });
-
-        let transporter = nodemailer.createTransport({
-            service: "Yahoo",
-            secure: false,
-            auth: {
-                user: process.env.EMAIL,
-                pass: process.env.PASSWORD,
-            },
-            tls: {
-                rejectUnauthorized: false
-            }
-        });
 
         const mail = `
         <p> Hello ${registerUsername}, </p>
@@ -211,26 +212,6 @@ exports.getProfile = async(req, res) => {
     }
 }
 
-exports.updateProfile = async(req, res) => {
-    const {id} = req.params;
-    let {hobbies, socialLink, favouriteChar, favouriteShow, aboutMe} = req.body;
-    console.log("Update",req.body)
-    try {
-        const updatedUser = await Users.findByIdAndUpdate(id, {
-            ProfileUpdated: true,
-            hobbies: hobbies,
-            socialLink: socialLink,
-            favouriteChar: favouriteChar,
-            favouriteShow: favouriteShow,
-            aboutMe: aboutMe
-        })
-        res.status(200).json(updatedUser);
-    } catch (error) {
-        res.status(400).json({
-            message: error.message
-        })
-    }
-}
 
 exports.getAllUsers = async (req, res) => {
     try {
@@ -239,6 +220,103 @@ exports.getAllUsers = async (req, res) => {
     } catch (error) {
         res.status(400).json({
             error: error.message
+        })
+    }
+}
+
+exports.forgotPassword = async (req, res) => {
+    try {
+        let {resetEmail} = req.body;
+        if (!resetEmail) {
+            return res.status(400).json({
+                msg: "Field can't be empty."
+            });
+        }
+        const existingUser = await Users.findOne({email: resetEmail });
+        if (!existingUser) {
+            return res.status(400).json({
+                msg: "No user exists with this mail."
+            });
+        }
+
+        const newToken = crypto.randomBytes(32).toString("hex");
+
+        Users.findOneAndUpdate({email: resetEmail}, {
+            resetToken: newToken,
+            expireToken: Date.now() + 3600000
+        }).then((result) => {
+            const mail = `
+            <p> Hello ${result.username}, </p>
+            <p>Welcome to Spark demo Portal</p>
+            <h3>Please click on given button to reset your password</h3>
+            <a href=${process.env.CLIENT_URL}/user/resetpassword/${newToken} style="margin:20px; padding: 20px; background: blue; color: white; text-decoration: none">Reset Password</a>
+            <p>or paste this link in your browser</p>
+            <p>${process.env.CLIENT_URL}/user/resetpassword/${newToken}</p>    
+            `
+    
+            let mailOptions = {
+                from: '"Spark Portal" <saurabhguptajpr@yahoo.in>',
+                to: resetEmail,
+                subject: "Reset Password",
+                html: mail
+            }
+    
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    return console.log(error);
+                }
+                console.log('Message sent:', info.messageId);
+                res.status(200).json({ message: "Email has been sent, kindly activate your account" });
+            })
+        })
+    } catch (error) {
+        res.status(400).json({
+            message: error.message
+        })
+    }
+}
+
+exports.resetPassword = async (req, res) => {
+    try {
+        let {newPassword, newPasswordCheck, resetToken} = req.body;
+        if (!newPassword || !newPasswordCheck) {
+            return res.status(400).json({
+                msg: "Not all fields have been entered."
+            });
+        }
+        if (newPassword.length < 5) {
+            return res.status(400).json({
+                msg: "The password needs to be atleast 5 characters long"
+            });
+        }
+        if (newPassword != newPasswordCheck) {
+            return res.status(400).json({
+                msg: "Enter the same password twice for verification"
+            })
+        }
+
+        const user = await Users.findOne({resetToken: resetToken, expireToken: {$gt: Date.now()}});
+        console.log(user);
+    
+        if (!user){
+            return res.status(400).json({
+                msg: "Try again session expired"
+            })
+        }
+
+        const salt = await bcrypt.genSalt();
+        const newPasswordHash = await bcrypt.hash(newPassword, salt); 
+        Users.findOneAndUpdate(resetToken, {
+            password: newPasswordHash,
+            resetToken: "",
+            expireToken: undefined
+        }).then((savedUser) => {
+            return res.status(200).json({message: "Password updated successfully"})
+        })   
+        
+    } catch (error) {
+        res.status(400).json({
+            message: error.message
         })
     }
 }
