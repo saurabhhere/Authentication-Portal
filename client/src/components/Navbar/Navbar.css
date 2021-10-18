@@ -23,10 +23,10 @@
 }
 
 .navbar-items {
-    display: flex;
-    line-height: 60px;
-    width: 500px;
-    justify-content: space-evenly;
+  display: flex;
+  line-height: 40px;
+  width: 500px;
+  justify-content: space-evenly;
 }
 
 .navbar-item:hover {
@@ -34,9 +34,11 @@
 }
 
 .navbar-item a, .navbar-item {
-    color: white;
-    font-weight: bolder;
-    font-size: 18px;
-    text-decoration: none;
-    cursor: pointer;
+  padding: 10px;
+  color: white;
+  font-weight: bolder;
+  font-size: 18px;
+  line-height: 40px;
+  text-decoration: none;
+  cursor: pointer;
 }

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import url from '../misc/url';
+import url from '../utils/url';
 import setAuthToken from "../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
 import {
@@ -172,4 +172,11 @@ export const resetpassword = (password, history) => dispatch => {
         payload: err.response.data
       })}
     );
+}
+
+export const cleanErrors = () => {
+  return {
+    type: GET_ERRORS,
+    payload: {}
+  }
 }

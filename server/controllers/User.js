@@ -48,7 +48,6 @@ exports.register = async (req, res) => {
                 msg: "An account with this email already exists"
             });
         }
-        console.log("registerImage", req.file);
         let registerImage = req.file ? req.file.filename : "default.png";
 
         const token = jwt.sign({ registerUsername, registerEmail, registerPassword, registerImage }, process.env.JWT_SECRET, { expiresIn: '20m' });
@@ -73,7 +72,6 @@ exports.register = async (req, res) => {
             if (error) {
                 return console.log(error);
             }
-            console.log('Message sent:', info.messageId);
             res.status(200).json({ message: "Email has been sent, kindly activate your account" });
         })
 
@@ -109,9 +107,8 @@ exports.login = async (req, res) => {
             name: user.username,
             email: user.email,
             image: user.image
-          };
-          console.log(payload);
-        // we can add expiresIn parameter in sec
+        };
+
         const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 31556926});
         res.json({
             success: true,
@@ -126,7 +123,6 @@ exports.login = async (req, res) => {
 
 exports.activateAccount = async (req, res) => {
     try {
-        console.log("activate account", req.body);
         const { token } = req.body;
         if (token) {
             jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
@@ -163,41 +159,15 @@ exports.activateAccount = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
     try {
-        const deletedUser = await Users. findByIdAndDelete(req.user);
+        const deletedUser = await Users.findByIdAndDelete(req.user);
         res.json(deletedUser);
     } catch (error) {
         res.status(500).json({error: error.message});
     }
 }
 
-exports.checkToken = async (req, res) => {
-    try {
-        const token = req.header("x-auth-token");
-        if (!token) return res.json(false);
-        const verified = jwt.verify(token, process.env.JWT_SECRET);
-        if (!verified) {
-            return res.json(false);
-        }
-        const user = await Users.findById(verified.id);
-        if (!user) return res.json(false);
-        return res.json(true);
-    } catch (error) {
-        res.status(500).json({error: error.message});
-    }
-}
-
-exports.getUser = async(req, res) => {
-    const user = await Users.findById(req.user);
-    res.json({
-        id: user._id,
-        username: user.username,
-        email: user.email
-    })
-}
-
 exports.getProfile = async(req, res) => {
     const {id} = req.params;
-    console.log(id);
     try {
         const user = await Users.findById(id);
         res.json({
@@ -208,18 +178,6 @@ exports.getProfile = async(req, res) => {
     } catch (error) {
         res.status(400).json({
             message: error.message
-        })
-    }
-}
-
-
-exports.getAllUsers = async (req, res) => {
-    try {
-        const users = await Users.find();
-        res.status(201).json(users);
-    } catch (error) {
-        res.status(400).json({
-            error: error.message
         })
     }
 }
@@ -265,7 +223,6 @@ exports.forgotPassword = async (req, res) => {
                 if (error) {
                     return console.log(error);
                 }
-                console.log('Message sent:', info.messageId);
                 res.status(200).json({ message: "Email has been sent, kindly activate your account" });
             })
         })
@@ -295,9 +252,7 @@ exports.resetPassword = async (req, res) => {
             })
         }
 
-        const user = await Users.findOne({resetToken: resetToken, expireToken: {$gt: Date.now()}});
-        console.log(user);
-    
+        const user = await Users.findOne({resetToken, expireToken: {$gt: Date.now()}});
         if (!user){
             return res.status(400).json({
                 msg: "Try again session expired"

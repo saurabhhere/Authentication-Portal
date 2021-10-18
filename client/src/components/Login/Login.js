@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './Login.css';
 import {connect} from 'react-redux';
-import { loginUser, registerUser } from '../../actions/authActions';
+import { loginUser, registerUser, cleanErrors } from '../../actions/authActions';
 import { Link, useHistory } from 'react-router-dom';
 
 const Login = (props) => {
@@ -32,7 +32,7 @@ const Login = (props) => {
             const userData = { loginEmail, loginPassword };
             props.loginUser(userData);
         } catch (error) {
-            console.log(error);
+            console.log(error.response);
             if (error.response){
                 setError(error.response.data.msg)
             } else {
@@ -86,6 +86,7 @@ const Login = (props) => {
         signInButton.addEventListener('click', () => {
             container.classList.remove("right-panel-active");
         });
+        props.cleanErrors();
     }, [])
 
     return (
@@ -94,10 +95,6 @@ const Login = (props) => {
 			<div className="form-container sign-up-container">
 				<form action="#">
 					<h1 className="login_heading">Create Account</h1>
-					<div className="social-container">
-						<a href="#" className="social"><i className="fab fa-google-plus-g"></i></a>
-					</div>
-					<span className="login_info">or use your email for registration</span>
 					<input className="login_input" type="text" placeholder="Name" onChange={e => setregisterUsername(e.target.value)} value={registerUsername} required/>
 					<input className="login_input" type="email" placeholder="Email" onChange={e => setregisterEmail(e.target.value)} value={registerEmail} required/>
 					<input className="login_input" type="password" placeholder="Password" onChange={e => setregisterPassword(e.target.value)} value={registerPassword} required/>
@@ -112,10 +109,6 @@ const Login = (props) => {
 			<div className="form-container sign-in-container">
 				<form>
 					<h1 className="login_heading">Sign in</h1>
-					<div className="social-container">
-						<a href="#" className="social"><i className="fab fa-google-plus-g"></i></a>
-					</div>
-					<span className="login_info">or use your account</span>
 					<input className="login_input" type="email" placeholder="Email" onChange={e => setloginEmail(e.target.value)} value={loginEmail} required />
 					<input className="login_input" type="password" placeholder="Password" onChange={e => setloginPassword(e.target.value)} value={loginPassword} required />
 						<Link to='/forgot-password'>Forgot your password?</Link>
@@ -149,4 +142,4 @@ const mapStateToProps = state => ({
     errors: state.errors
   });
 
-export default connect(mapStateToProps, {registerUser, loginUser})(Login);
+export default connect(mapStateToProps, {registerUser, loginUser, cleanErrors})(Login);

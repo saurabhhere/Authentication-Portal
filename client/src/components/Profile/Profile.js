@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {FiLogOut} from 'react-icons/fi'
 import { logoutUser } from '../../actions/authActions';
 import { useHistory } from 'react-router-dom';
-import url from '../../misc/url';
+import url from '../../utils/url';
 
 const Profile = (props) => {
     
@@ -17,7 +17,6 @@ const Profile = (props) => {
 
     return (
     <div className="profile-container">
-        
         <div className="profile">
         <button className="profile-button" onClick={Logout}><FiLogOut/></button>
         <div className="profile-img">

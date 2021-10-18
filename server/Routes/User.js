@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const auth = require('../middleware/auth');
-const {register, login, activateAccount, deleteUser, checkToken, getUser, getProfile, getAllUsers, forgotPassword, resetPassword} = require('../controllers/User');
+const {register, login, activateAccount, deleteUser, getProfile, forgotPassword, resetPassword} = require('../controllers/User');
 
 const multer = require('multer');
 
@@ -30,12 +30,9 @@ const upload = multer({ storage: storage, limits: {
 router.post('/register', upload.single("registerImage"), register);
 router.post("/login", login);
 router.post('/email-activate', activateAccount)
-router.delete("/delete", auth, deleteUser);
-router.post("/tokenIsValid", checkToken);
-router.get("/", auth, getUser);
-router.get("/profile/:id", getProfile);
-router.get("/all", getAllUsers);
 router.post("/forgot-password", forgotPassword)
 router.post("/reset-password", resetPassword)
+router.delete("/delete", auth, deleteUser);
+router.get("/profile/:id", getProfile);
 
 module.exports = router;

@@ -15,7 +15,7 @@ const ResetPassword = (props) => {
 
     const handleResetPassword = async (e) => {
         try {
-            const password = {newPassword, newPasswordCheck, token};
+            const password = {newPassword, newPasswordCheck, resetToken: token};
             props.resetpassword(password, props.history);
         } catch (error) {
             if (error.response){
