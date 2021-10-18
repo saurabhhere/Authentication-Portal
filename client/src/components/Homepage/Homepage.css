@@ -1,0 +1,20 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
+
+.homepage {
+    display: flex;
+    height: calc(100vh - 60px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.homepage-tagline {
+    font-size: 62px;
+    font-family: 'Montserrat';
+    font-weight: bolder;
+    margin-left: 40px;
+}
+
+.homepage-img img{
+    height: calc(100vh - 100px);
+}
