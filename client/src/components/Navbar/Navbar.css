@@ -1,0 +1,42 @@
+/*     importing google fonts css     */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
+
+.navbar {
+  background: linear-gradient(
+    93deg,
+    #ff4b2b 16%,
+    #ff416c 55%
+  );
+  font-family: 'Montserrat';
+  height: 60px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.logo a{
+  color: cornsilk;
+  font-size: 35px;
+  font-weight: bold;
+  line-height: 60px;
+  margin-left: 40px;
+  text-decoration: none;
+}
+
+.navbar-items {
+    display: flex;
+    line-height: 60px;
+    width: 500px;
+    justify-content: space-evenly;
+}
+
+.navbar-item:hover {
+  border-bottom: 2px solid white;
+}
+
+.navbar-item a, .navbar-item {
+    color: white;
+    font-weight: bolder;
+    font-size: 18px;
+    text-decoration: none;
+    cursor: pointer;
+}

@@ -4,7 +4,7 @@
     align-items: center;
     flex-direction: column;
 	background: #f6f5f7;
-    height: 100vh;
+    height: calc(100vh - 60px);
 	font-family: "Montserrat", sans-serif;
 }
 

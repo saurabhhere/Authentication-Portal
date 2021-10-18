@@ -8,6 +8,7 @@ import Profile from './components/Profile/Profile';
 import PrivateRoute from './components/PrivateRoute'
 import ForgotPassword from './components/ForgotPassword/ForgotPassword';
 import ResetPassword from './components/ResetPassword/ResetPassword';
+import Navbar from './components/Navbar/Navbar';
 
 toast.configure();
 
@@ -15,6 +16,7 @@ function App() {
   return (
     <div className="App">
         <Router>
+          <Navbar />
           <Switch>
             <Route path="/user/login" exact component={Login} />
             <Route path="/authentication/activate/:token" exact component={AccountActivate} />

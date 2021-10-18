@@ -3,7 +3,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+	min-height: calc(100vh - 60px);
     background: linear-gradient(#ff4b2b, #ff416c 45%, #fff 45%, #fff 100%);
 }
   
